@@ -17,7 +17,7 @@
     "koa": "2.4.1",
     "koa-bodyparser": "4.2.0",
     "koa-router": "7.3.0",
-    "lodash": "4.17.4",
+    "lodash": "4.17.5",
     "request": "2.83.0",
     "request-promise": "4.2.2",
     "tdigest": "0.1.1"
