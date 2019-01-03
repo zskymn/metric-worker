@@ -69,7 +69,6 @@ $ npm run coverage
 
 判断服务是否存在的接口，主要供NG调用
 
-
 /metric/push
 
 接收外部push数据的接口，本项目提供服务的主要接口

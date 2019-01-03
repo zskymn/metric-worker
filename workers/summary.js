@@ -51,8 +51,8 @@ SummaryWorker.prototype.pushBackends = function (metrics) {
 
     let output = metric.output || {};
 
-    output.common = output.common || ['min', 'max', 'count'];
-    output.percentiles = output.percentiles || [5, 95, 99];
+    output.common = output.common.length ? output.common : ['min', 'max', 'count'];
+    output.percentiles = output.percentiles.length ? output.percentiles : [50, 90, 95, 99];
 
     let _td = metric.tdigest;
     _td.compress();
@@ -196,20 +196,24 @@ SummaryWorker.prototype.add = function (metrics) {
       return;
     }
 
+    metric.output = _.isObject(metric.output) ? metric.output : {};
+    metric.output.common = _.isArray(metric.output.common) ? metric.output.common : [];
+    metric.output.percentiles = _.isArray(metric.output.percentiles) ? metric.output.percentiles : [];
+
+
     let _last = self.metrics[metric.name];
     if (!_last) {
       _last = metric;
       self.metrics[metric.name] = _last;
-    }
-
-    if (!(_last.tdigest instanceof TDigest)) {
       _last.tdigest = new TDigest();
+    } else {
+      _last.output.common = _.chain(_last.output.common).concat(metric.output.common).uniq().value();
+      _last.output.percentiles = _.chain(_last.output.percentiles).concat(metric.output.percentiles).uniq().value();
     }
 
     _.each(samplePairs, function (sample) {
       _last.tdigest.push(sample.mean, sample.count);
     });
-    _last.output = metric.output;
   });
 };
 
